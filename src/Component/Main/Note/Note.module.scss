@@ -1,0 +1,12 @@
+.noteWrapper {
+  width: 300px;
+  height: 300px;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: rgba(164, 134, 0, 0.7);
+  .notePanel {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid black;
+  }
+}
