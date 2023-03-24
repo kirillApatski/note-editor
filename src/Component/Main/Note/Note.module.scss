@@ -2,7 +2,9 @@
   width: 300px;
   min-height: 300px;
   padding: 5px;
+  border: 1px solid black;
   border-radius: 10px;
+  box-shadow: 3px 4px 5px black;
   background-color: rgba(164, 134, 0, 0.7);
   overflow: hidden;
   .notePanel {
@@ -15,11 +17,12 @@
     }
   }
   .noteText {
+    text-align: left;
     overflow: scroll;
     min-height: 150px;
     margin-top: 5px;
     word-break: break-all;
-    padding: 10px 0;
+    padding: 10px 5px;
     border: 1px solid black;
     border-radius: 10px;
     font-size: 20px;
@@ -42,12 +45,11 @@
     }
   }
   .tagsBox {
+    text-align: left;
     list-style-type: none;
-    display: flex;
     align-items: center;
     margin-left: 10px;
     > li {
-      align-items: start;
       font-weight: bold;
       color: blue;
     }

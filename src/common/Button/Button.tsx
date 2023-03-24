@@ -18,7 +18,6 @@ const Button: React.FC<ButtonPropsType> = (
 
   return (
     <button
-      type='button'
       className={finalClassName}
       {...restProps}
     />

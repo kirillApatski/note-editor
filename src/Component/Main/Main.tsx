@@ -9,7 +9,7 @@ import {
 } from "../../reducers/noteReduser";
 import Button from "../../common/Button/Button";
 import Input from "../../common/Input/Input";
-
+import {tagsReducer} from "../../reducers/tagsReducer";
 
 export const initialState: StateType[] = []
 
@@ -20,38 +20,55 @@ export type StateType = {
 
 
 const Main = () => {
-  const [state, dispatch] = useReducer(noteReducer, initialState)
+  const [state, dispatchNote] = useReducer(noteReducer, initialState)
+  const [tags, dispatchTags] = useReducer(tagsReducer, {})
   const [valueInputText, setValueInputText] = useState('')
 
   const onChangeHandler = (text: string) => {
     setValueInputText(text)
   }
   const addNewNote = () => {
-    valueInputText && dispatch(addNoteAC(valueInputText))
+    const action = addNoteAC(valueInputText)
+    dispatchNote(action)
+    dispatchTags(action)
     setValueInputText('')
   }
   const onKeyPressHandler = () => {
     addNewNote()
   }
   const deleteNote = (id: string) => {
-    dispatch(deleteNoteAC(id))
+    dispatchNote(deleteNoteAC(id))
   }
   const updateNoteText = (newText: string, id: string) => {
-    dispatch(updateNoteTextAC(newText, id))
+    dispatchNote(updateNoteTextAC(newText, id))
   }
   return (
     <main className={s.main}>
-      <form className={s.addNote}>
-        <label htmlFor="addNote">Added Note</label>
-        <Input
-          form="addNote"
-          type="text"
-          placeholder='Enter text'
-          onChangeText={onChangeHandler}
-          onEnter={onKeyPressHandler}
-          value={valueInputText}
-        />
-        <Button onClick={addNewNote}>Add</Button>
+      <form className={s.form}>
+        <div className={s.inputContainer}>
+          <label htmlFor="addNote">Added Note</label>
+          <Input
+            form="addNote"
+            type="text"
+            placeholder='Enter text'
+            onChangeText={onChangeHandler}
+            onEnter={onKeyPressHandler}
+            value={valueInputText}
+          />
+          <Button type="button" onClick={addNewNote}>Add</Button>
+        </div>
+        <div className={s.inputContainer}>
+          <label htmlFor="addNote">Tag search</label>
+          <Input
+            form="addNote"
+            type="text"
+            placeholder='Enter the tag name'
+            onChangeText={() => {}}
+            onEnter={onKeyPressHandler}
+            value={'search'}
+          />
+          <Button type="button">Search</Button>
+        </div>
       </form>
       <div className={s.mainContent}>
         {
@@ -62,6 +79,9 @@ const Main = () => {
               return (
                 <Note
                   key={note.id}
+                  tags={tags}
+                  dispatchTags={dispatchTags}
+                  dispatchNote={dispatchNote}
                   idNote={note.id}
                   deleteNote={deleteNote}
                   updateNoteText={updateNoteText}

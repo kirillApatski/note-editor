@@ -18,7 +18,6 @@ export const Input: React.FC<InputTextPropsType> = (
     ...restProps
   }
 ) => {
-
   const onChangeCallback = (e: ChangeEvent<HTMLInputElement>) => {
     onChange && onChange(e)
     onChangeText && onChangeText(e.currentTarget.value)
