@@ -1,17 +1,29 @@
 import React, {useReducer, useState} from 'react';
 import s from './Main.module.scss'
 import Note from "./Note/Note";
-import {addNoteAC, deleteNoteAC, noteReducer, updateNoteTextAC} from "../../store/reducers/noteReduser";
-import {store} from "../../store/store";
+import {
+  addNoteAC,
+  deleteNoteAC,
+  noteReducer,
+  updateNoteTextAC
+} from "../../reducers/noteReduser";
 import Button from "../../common/Button/Button";
 import Input from "../../common/Input/Input";
 
 
+export const initialState: StateType[] = []
+
+export type StateType = {
+  id: string
+  text: string
+}
+
+
 const Main = () => {
-  const [state, dispatch] = useReducer(noteReducer, store)
+  const [state, dispatch] = useReducer(noteReducer, initialState)
   const [valueInputText, setValueInputText] = useState('')
 
-  const onChangeHandle = (text: string) => {
+  const onChangeHandler = (text: string) => {
     setValueInputText(text)
   }
   const addNewNote = () => {
@@ -24,11 +36,9 @@ const Main = () => {
   const deleteNote = (id: string) => {
     dispatch(deleteNoteAC(id))
   }
-
   const updateNoteText = (newText: string, id: string) => {
     dispatch(updateNoteTextAC(newText, id))
   }
-
   return (
     <main className={s.main}>
       <form className={s.addNote}>
@@ -36,7 +46,8 @@ const Main = () => {
         <Input
           form="addNote"
           type="text"
-          onChangeText={onChangeHandle}
+          placeholder='Enter text'
+          onChangeText={onChangeHandler}
           onEnter={onKeyPressHandler}
           value={valueInputText}
         />
@@ -51,7 +62,7 @@ const Main = () => {
               return (
                 <Note
                   key={note.id}
-                  id={note.id}
+                  idNote={note.id}
                   deleteNote={deleteNote}
                   updateNoteText={updateNoteText}
                   text={note.text}
