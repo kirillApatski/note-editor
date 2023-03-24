@@ -1,20 +1,24 @@
 .noteWrapper {
   width: 300px;
-  height: 300px;
+  min-height: 300px;
   padding: 5px;
   border-radius: 10px;
   background-color: rgba(164, 134, 0, 0.7);
   overflow: hidden;
   .notePanel {
-      padding: 10px;
-      text-align: center;
+    display: flex;
+    justify-content: space-around;
+      text-align: right;
       border-bottom: 1px solid black;
+    .noteNumber {
+      font-size: 25px;
+    }
   }
   .noteText {
     overflow: scroll;
+    min-height: 150px;
     margin-top: 5px;
     word-break: break-all;
-    height: 60%;
     padding: 10px 0;
     border: 1px solid black;
     border-radius: 10px;
@@ -23,7 +27,6 @@
   }
   .updateBox {
     padding-top: 5px;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,11 +34,22 @@
       width: 100%;
       resize: none;
       padding: 10px;
-      height: calc(100% - 110px);
+      height: 150px;
       outline: none;
       border: 1px solid black;
       border-radius: 10px;
       background-color: rgba(164, 134, 0, 0.3);
+    }
+  }
+  .tagsBox {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    > li {
+      align-items: start;
+      font-weight: bold;
+      color: blue;
     }
   }
 }
