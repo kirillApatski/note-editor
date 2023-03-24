@@ -7,7 +7,6 @@ import ConfirmIcon from "../../../assets/icons/ConfirmIcon";
 import {ActionTagType, addTagsAC, removeTagAC, TagsType, TagType} from "../../../reducers/tagsReducer";
 import {v1} from "uuid";
 import DeleteIconMin from "../../../assets/icons/DeleteIconMin";
-import {ActionNoteType} from "../../../reducers/noteReduser";
 
 type NotePropsType = {
   text: string
@@ -15,12 +14,11 @@ type NotePropsType = {
   tags: TagsType
   dispatchTags: (value: ActionTagType) => void
   deleteNote: (id: string) => void
-  dispatchNote: (value: ActionNoteType) => void
   updateNoteText: (text: string, id: string) => void
 }
 
 const Note: FC<NotePropsType> = (
-  {text,tags, idNote, deleteNote, updateNoteText, dispatchTags, dispatchNote}
+  {text,tags, idNote, deleteNote, updateNoteText, dispatchTags}
 ) => {
   const [editMode, setEditMode] = useState(false)
   const [valueTextarea, setValueTextarea] = useState(text)
@@ -51,7 +49,6 @@ const Note: FC<NotePropsType> = (
         } as TagType
         arrTags.push(obg)
         dispatchTags(addTagsAC(arrTags, idNote))
-        dispatchNote(addTagsAC(arrTags, idNote))
       }
     }
   }

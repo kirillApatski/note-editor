@@ -81,7 +81,6 @@ const Main = () => {
                   key={note.id}
                   tags={tags}
                   dispatchTags={dispatchTags}
-                  dispatchNote={dispatchNote}
                   idNote={note.id}
                   deleteNote={deleteNote}
                   updateNoteText={updateNoteText}
