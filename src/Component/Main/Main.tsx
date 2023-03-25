@@ -4,34 +4,39 @@ import Note from "./Note/Note";
 import {
   addNoteAC,
   deleteNoteAC,
-  noteReducer,
+  noteReducer, searchTagAC, TagType,
   updateNoteTextAC
 } from "../../reducers/noteReduser";
 import Button from "../../common/Button/Button";
 import Input from "../../common/Input/Input";
-import {tagsReducer} from "../../reducers/tagsReducer";
-
 export const initialState: StateType[] = []
 
 export type StateType = {
   id: string
   text: string
+  tags: TagType[]
 }
 
 
 const Main = () => {
   const [state, dispatchNote] = useReducer(noteReducer, initialState)
-  const [tags, dispatchTags] = useReducer(tagsReducer, {})
   const [valueInputText, setValueInputText] = useState('')
-
+  const [searchTag, setSearchTag] = useState('')
+  console.log(state)
   const onChangeHandler = (text: string) => {
     setValueInputText(text)
   }
+  const onChangeSearchHandler = (text: string) => {
+    setSearchTag(text)
+  }
+  const a = () => {
+    dispatchNote(searchTagAC(searchTag))
+  }
   const addNewNote = () => {
-    const action = addNoteAC(valueInputText)
-    dispatchNote(action)
-    dispatchTags(action)
-    setValueInputText('')
+    if(valueInputText.trim().length !== 0){
+      dispatchNote(addNoteAC(valueInputText))
+      setValueInputText('')
+    }
   }
   const onKeyPressHandler = () => {
     addNewNote()
@@ -63,11 +68,11 @@ const Main = () => {
             form="addNote"
             type="text"
             placeholder='Enter the tag name'
-            onChangeText={() => {}}
+            onChangeText={onChangeSearchHandler}
             onEnter={onKeyPressHandler}
-            value={'search'}
+            value={searchTag}
           />
-          <Button type="button">Search</Button>
+          <Button onClick={a} type="button">Search</Button>
         </div>
       </form>
       <div className={s.mainContent}>
@@ -79,8 +84,8 @@ const Main = () => {
               return (
                 <Note
                   key={note.id}
-                  tags={tags}
-                  dispatchTags={dispatchTags}
+                  tags={note.tags}
+                  dispatchNote={dispatchNote}
                   idNote={note.id}
                   deleteNote={deleteNote}
                   updateNoteText={updateNoteText}

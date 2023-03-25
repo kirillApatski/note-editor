@@ -4,21 +4,21 @@ import DeleteIcon from "../../../assets/icons/DeleteIcon";
 import EditIcon from "../../../assets/icons/EditIcon";
 import Button from "../../../common/Button/Button";
 import ConfirmIcon from "../../../assets/icons/ConfirmIcon";
-import {ActionTagType, addTagsAC, removeTagAC, TagsType, TagType} from "../../../reducers/tagsReducer";
 import {v1} from "uuid";
+import {ActionNoteType, addTagsAC, removeTagAC, TagType} from "../../../reducers/noteReduser";
 import DeleteIconMin from "../../../assets/icons/DeleteIconMin";
 
 type NotePropsType = {
   text: string
   idNote: string
-  tags: TagsType
-  dispatchTags: (value: ActionTagType) => void
+  tags: TagType[]
+  dispatchNote: (value: ActionNoteType) => void
   deleteNote: (id: string) => void
   updateNoteText: (text: string, id: string) => void
 }
 
 const Note: FC<NotePropsType> = (
-  {text,tags, idNote, deleteNote, updateNoteText, dispatchTags}
+  {text,tags, idNote, deleteNote, updateNoteText, dispatchNote}
 ) => {
   const [editMode, setEditMode] = useState(false)
   const [valueTextarea, setValueTextarea] = useState(text)
@@ -32,7 +32,7 @@ const Note: FC<NotePropsType> = (
     deleteNote(idNote)
   }
   const onClickHandlerDeleteTag = (idTag: string) => {
-    dispatchTags(removeTagAC(idNote, idTag))
+    dispatchNote(removeTagAC(idNote, idTag))
   }
   const onClickHandlerEditMode = (mode: boolean) => {
     setEditMode(mode)
@@ -42,13 +42,13 @@ const Note: FC<NotePropsType> = (
     let val = value.split(/(#[a-z\d-]+)/ig);
     const arrTags = []
     for (let i = 0; i < val.length; i++) {
-      if (val[i].charAt(0).trim() === "#") {
+      if (val[i].charAt(0) === "#") {
         const obg = {
           tag: val[i],
           id: v1()
         } as TagType
         arrTags.push(obg)
-        dispatchTags(addTagsAC(arrTags, idNote))
+        dispatchNote(addTagsAC(arrTags, idNote))
       }
     }
   }
@@ -75,7 +75,7 @@ const Note: FC<NotePropsType> = (
             <ul className={s.tagsBox}>
               {
 
-                tags[idNote]?.map(tag => {
+                tags.map(tag => {
                   return (
                     <React.Fragment key={tag.id}>
                       <li>
