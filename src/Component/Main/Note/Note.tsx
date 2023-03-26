@@ -27,10 +27,14 @@ const Note: FC<NotePropsType> = (
     const textareaValue = e.currentTarget.value
     setValueTextarea(textareaValue)
     updateNoteText(textareaValue, idNote)
+    if(textareaValue.length === 0){
+      dispatchNote(addTagsAC([], idNote))
+    }
   }
   const onClickHandlerDeleteNote = () => {
     deleteNote(idNote)
   }
+
   const onClickHandlerDeleteTag = (idTag: string) => {
     dispatchNote(removeTagAC(idNote, idTag))
   }
@@ -39,7 +43,7 @@ const Note: FC<NotePropsType> = (
     addTeg(valueTextarea)
   }
   const addTeg = (value: string) => {
-    let val = value.split(/(#[a-z\d-]+)/ig);
+    let val = value.split(/(#[a-я\d-]+)/ig);
     const arrTags = []
     for (let i = 0; i < val.length; i++) {
       if (val[i].charAt(0) === "#") {
@@ -74,7 +78,6 @@ const Note: FC<NotePropsType> = (
             <p className={s.noteText}>{text}</p>
             <ul className={s.tagsBox}>
               {
-
                 tags.map(tag => {
                   return (
                     <React.Fragment key={tag.id}>
