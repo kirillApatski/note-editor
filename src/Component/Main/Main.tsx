@@ -1,15 +1,14 @@
-import React, {useReducer, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import s from './Main.module.scss'
 import Note from "./Note/Note";
 import {
   addNoteAC,
   deleteNoteAC,
-  noteReducer, searchTagAC, TagType,
+  noteReducer, TagType,
   updateNoteTextAC
 } from "../../reducers/noteReduser";
 import Button from "../../common/Button/Button";
 import Input from "../../common/Input/Input";
-export const initialState: StateType[] = []
 
 export type StateType = {
   id: string
@@ -19,21 +18,21 @@ export type StateType = {
 
 
 const Main = () => {
+  const localStorageState = localStorage.getItem("data")
+  const initialState: StateType[] = localStorageState ? JSON.parse(localStorageState) : []
+
   const [state, dispatchNote] = useReducer(noteReducer, initialState)
   const [valueInputText, setValueInputText] = useState('')
   const [searchTag, setSearchTag] = useState('')
-  console.log(state)
+
   const onChangeHandler = (text: string) => {
     setValueInputText(text)
   }
   const onChangeSearchHandler = (text: string) => {
     setSearchTag(text)
   }
-  const a = () => {
-    dispatchNote(searchTagAC(searchTag))
-  }
   const addNewNote = () => {
-    if(valueInputText.trim().length !== 0){
+    if (valueInputText.trim().length !== 0) {
       dispatchNote(addNoteAC(valueInputText))
       setValueInputText('')
     }
@@ -47,6 +46,14 @@ const Main = () => {
   const updateNoteText = (newText: string, id: string) => {
     dispatchNote(updateNoteTextAC(newText, id))
   }
+
+  let newState = state
+  if(searchTag) {
+    newState = state.filter(note => note.tags.find(tag => tag.tag === searchTag ? note : ''))
+  }
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(state))
+  }, [newState])
   return (
     <main className={s.main}>
       <form className={s.form}>
@@ -72,15 +79,14 @@ const Main = () => {
             onEnter={onKeyPressHandler}
             value={searchTag}
           />
-          <Button onClick={a} type="button">Search</Button>
         </div>
       </form>
       <div className={s.mainContent}>
         {
-          !state.length
+          !newState.length
             ?
             <h2 className={s.contentTitle}>Create a note</h2>
-            : state.map(note => {
+            : newState.map(note => {
               return (
                 <Note
                   key={note.id}
