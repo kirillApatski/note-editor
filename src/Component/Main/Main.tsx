@@ -53,7 +53,7 @@ const Main = () => {
   }
   useEffect(() => {
     localStorage.setItem("data", JSON.stringify(state))
-  }, [newState])
+  }, [state])
   return (
     <main className={s.main}>
       <form className={s.form}>
