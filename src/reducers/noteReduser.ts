@@ -25,8 +25,6 @@ export const noteReducer = (state: StateType[], action: ActionNoteType): StateTy
       return state.filter(note => note.id !== action.idNote)
     case "UPDATE-NOTE-TEXT":
       return state.map(note => note.id === action.idNote ? {...note, text: action.text} : note)
-    case "SEARCH-TAG":
-      return []
     default:
       return state
   }
@@ -44,19 +42,15 @@ export const updateNoteTextAC = (text: string, idNote: string) => {
 export const addTagsAC = (tags: Array<TagType>, idNote: string) => {
   return {type: "ADD-TAG", tags, idNote} as const
 }
-export const searchTagAC = (text: string) => {
-  return {type: "SEARCH-TAG", text} as const
-}
 export const removeTagAC = (idNote: string, idTag: string ) => {
   return {type: "DELETE-TAG", idNote, idTag} as const
 }
 
-export type ActionNoteType = AddNote | DeleteNote | UpdateNoteText | AddTagsAC | DeleteTagAC | SearchTagAC
+export type ActionNoteType = AddNote | DeleteNote | UpdateNoteText | AddTagsAC | DeleteTagAC
 
 export type AddNote = ReturnType<typeof addNoteAC>
 export type DeleteNote = ReturnType<typeof deleteNoteAC>
 export type UpdateNoteText = ReturnType<typeof updateNoteTextAC>
 export type AddTagsAC = ReturnType<typeof addTagsAC>
 export type DeleteTagAC = ReturnType<typeof removeTagAC>
-export type SearchTagAC = ReturnType<typeof searchTagAC>
 
