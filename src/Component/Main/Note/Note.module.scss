@@ -1,6 +1,6 @@
 .noteWrapper {
-  width: 300px;
-  min-height: 300px;
+  width: 100%;
+  min-height: 400px;
   padding: 5px;
   border: 1px solid black;
   border-radius: 10px;
@@ -19,7 +19,7 @@
   .noteText {
     text-align: left;
     overflow: scroll;
-    min-height: 170px;
+    min-height: 300px;
     margin-top: 5px;
     word-break: break-all;
     padding: 10px 5px;
@@ -35,9 +35,10 @@
     align-items: center;
     .updateText {
       width: 100%;
+      font-size: 20px;
       text-align: left;
       padding: 10px;
-      height: 170px;
+      height: 300px;
       outline: none;
       border: 1px solid black;
       border-radius: 10px;
@@ -45,6 +46,8 @@
     }
   }
   .tagsBox {
+    display: flex;
+    flex-wrap: wrap;
     text-align: left;
     list-style-type: none;
     align-items: center;
