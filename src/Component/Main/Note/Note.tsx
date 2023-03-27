@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useState} from 'react';
+import React, {FC, FormEvent, useState} from 'react';
 import s from './Note.module.scss'
 import DeleteIcon from "../../../assets/icons/DeleteIcon";
 import EditIcon from "../../../assets/icons/EditIcon";
@@ -18,17 +18,28 @@ type NotePropsType = {
 }
 
 const Note: FC<NotePropsType> = (
-  {text,tags, idNote, deleteNote, updateNoteText, dispatchNote}
+  {text, tags, idNote, deleteNote, updateNoteText, dispatchNote}
 ) => {
   const [editMode, setEditMode] = useState(false)
   const [valueTextarea, setValueTextarea] = useState(text)
 
-  const onChangeHandlerTextarea = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const textareaValue = e.currentTarget.value
-    setValueTextarea(textareaValue)
-    updateNoteText(textareaValue, idNote)
-    if(textareaValue.length === 0){
-      dispatchNote(addTagsAC([], idNote))
+  const onChangeHandlerTextarea = (e: FormEvent<HTMLParagraphElement>) => {
+    const textareaValue = e.currentTarget.textContent
+    if(textareaValue){
+      let selectedText = window.getSelection();
+      let selectedRange = document.createRange();
+      if(selectedText && selectedRange) {
+        selectedRange.setStart(e.currentTarget, selectedText.rangeCount);
+        selectedRange.collapse(true);
+        selectedText.removeAllRanges();
+        selectedText.addRange(selectedRange);
+        e.currentTarget.focus();
+      }
+      setValueTextarea(textareaValue)
+      updateNoteText(textareaValue, idNote)
+      if (textareaValue?.length === 0) {
+        dispatchNote(addTagsAC([], idNote))
+      }
     }
   }
   const onClickHandlerDeleteNote = () => {
@@ -42,17 +53,19 @@ const Note: FC<NotePropsType> = (
     setEditMode(mode)
     addTeg(valueTextarea)
   }
-  const addTeg = (value: string) => {
-    let val = value.split(/(#[a-я\d-]+)/ig);
+  const addTeg = (value: string | null) => {
+    let val = value?.split(/(#[a-я\d-]+)/ig);
     const arrTags = []
-    for (let i = 0; i < val.length; i++) {
-      if (val[i].charAt(0) === "#") {
-        const obg = {
-          tag: val[i],
-          id: v1()
-        } as TagType
-        arrTags.push(obg)
-        dispatchNote(addTagsAC(arrTags, idNote))
+    if (val) {
+      for (let i = 0; i < val.length; i++) {
+        if (val[i].charAt(0) === "#") {
+          const obg = {
+            tag: val[i],
+            id: v1()
+          } as TagType
+          arrTags.push(obg)
+          dispatchNote(addTagsAC(arrTags, idNote))
+        }
       }
     }
   }
@@ -94,13 +107,13 @@ const Note: FC<NotePropsType> = (
             </ul>
           </>
           : <div className={s.updateBox}>
-            <textarea
-              autoFocus={true}
-              className={s.textarea}
-              value={valueTextarea}
+            <p
+              className={s.updateText}
+              contentEditable="true"
+              suppressContentEditableWarning={true}
               onBlur={() => onClickHandlerEditMode(false)}
-              onChange={onChangeHandlerTextarea}
-            />
+              onInput={onChangeHandlerTextarea}
+            >{valueTextarea}</p>
             <Button
               className={s.button}
               onClick={() => onClickHandlerEditMode(false)}
