@@ -6,7 +6,7 @@ import Button from "../../../common/Button/Button";
 import ConfirmIcon from "../../../assets/icons/ConfirmIcon";
 import {v1} from "uuid";
 import {ActionNoteType, addTagsAC, removeTagAC, TagType} from "../../../reducers/noteReduser";
-import DeleteIconMin from "../../../assets/icons/DeleteIconMin";
+import Tag from "./Tag/Tag";
 
 type NotePropsType = {
   text: string
@@ -21,25 +21,29 @@ const Note: FC<NotePropsType> = (
   {text, tags, idNote, deleteNote, updateNoteText, dispatchNote}
 ) => {
   const [editMode, setEditMode] = useState(false)
-  const [valueTextarea, setValueTextarea] = useState(text)
+  const [valueUpdateText, setValueUpdateText] = useState(text)
+
+  const setCurrentCursorPosition = (updateValue: string, e: FormEvent<HTMLParagraphElement>) => {
+    const selectedText = window.getSelection()
+    const selectedRange = document.createRange()
+    if (selectedText && selectedRange) {
+      selectedRange.setStart(e.currentTarget, selectedText.rangeCount)
+      selectedText.removeAllRanges()
+      selectedText.addRange(selectedRange)
+      e.currentTarget.focus()
+    }
+  }
 
   const onChangeHandlerTextarea = (e: FormEvent<HTMLParagraphElement>) => {
-    const textareaValue = e.currentTarget.textContent
-    if(textareaValue){
-      let selectedText = window.getSelection();
-      let selectedRange = document.createRange();
-      if(selectedText && selectedRange) {
-        selectedRange.setStart(e.currentTarget, selectedText.rangeCount);
-        selectedRange.collapse(true);
-        selectedText.removeAllRanges();
-        selectedText.addRange(selectedRange);
-        e.currentTarget.focus();
-      }
-      setValueTextarea(textareaValue)
-      updateNoteText(textareaValue, idNote)
-      if (textareaValue?.length === 0) {
-        dispatchNote(addTagsAC([], idNote))
-      }
+    const updateValue = e.currentTarget.textContent
+
+    if (updateValue) {
+      setCurrentCursorPosition(updateValue, e)
+      setValueUpdateText(updateValue)
+      updateNoteText(updateValue, idNote)
+    }
+    if (updateValue?.length === 0) {
+      dispatchNote(addTagsAC([], idNote))
     }
   }
   const onClickHandlerDeleteNote = () => {
@@ -51,9 +55,9 @@ const Note: FC<NotePropsType> = (
   }
   const onClickHandlerEditMode = (mode: boolean) => {
     setEditMode(mode)
-    addTeg(valueTextarea)
+    addTeg(valueUpdateText)
   }
-  const addTeg = (value: string | null) => {
+  const addTeg = (value: string) => {
     let val = value?.split(/(#[a-я\d-]+)/ig);
     const arrTags = []
     if (val) {
@@ -69,6 +73,7 @@ const Note: FC<NotePropsType> = (
       }
     }
   }
+
   return (
     <div className={s.noteWrapper}>
       <div className={s.notePanel}>
@@ -93,14 +98,11 @@ const Note: FC<NotePropsType> = (
               {
                 tags.map(tag => {
                   return (
-                    <React.Fragment key={tag.id}>
-                      <li>
-                        {tag.tag}
-                        <Button className={s.button} onClick={() => onClickHandlerDeleteTag(tag.id)}>
-                          <DeleteIconMin/>
-                        </Button>
-                      </li>
-                    </React.Fragment>
+                    <Tag
+                      key={tag.id}
+                      tag={tag}
+                      onClickHandlerDeleteTag={onClickHandlerDeleteTag}
+                    />
                   )
                 })
               }
@@ -113,7 +115,10 @@ const Note: FC<NotePropsType> = (
               suppressContentEditableWarning={true}
               onBlur={() => onClickHandlerEditMode(false)}
               onInput={onChangeHandlerTextarea}
-            >{valueTextarea}</p>
+            >
+              {valueUpdateText}
+            </p>
+
             <Button
               className={s.button}
               onClick={() => onClickHandlerEditMode(false)}
